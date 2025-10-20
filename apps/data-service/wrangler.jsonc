@@ -11,4 +11,50 @@
 	"observability": {
 		"enabled": true,
 	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "03084d6f-33b2-4fd0-8e6b-cf8722c84db5",
+			"remote": true,
+		},
+	],
+	"kv_namespaces": [
+		{
+			"binding": "CACHE",
+			"id": "7b461abaa5274e0e8a0a3fa20b9f953a",
+			"remote": true,
+		},
+	],
+	"queues": {
+		"consumers": [
+			{
+				"queue": "smart-links-data-queue-stage",
+				"dead_letter_queue": "smart-links-data-dead-letter-queue-stage",
+			},
+			{
+				"queue": "smart-links-data-dead-letter-queue-stage",
+				"max_retries": 0, // default is 3
+			},
+		],
+		"producers": [
+			{
+				"binding": "QUEUE",
+				"queue": "smart-links-data-queue-stage",
+			},
+		],
+	},
+	"workflows": [
+		{
+			"binding": "DESTINATION_EVALUATION_WORKFLOW",
+			"name": "destination-evaluation-workflow",
+			"class_name": "DestinationEvaluationWorkflow",
+		},
+	],
+	"browser": {
+		"binding": "VIRTUAL_BROWSER",
+	},
+	"ai": {
+		"binding": "AI",
+	},
+	"r2_buckets": [{ "binding": "EVALUATIONS_BUCKET", "bucket_name": "smart-links-evaluations-stage", "remote": true }],
 }
