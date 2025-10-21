@@ -1,10 +1,28 @@
 import { getLink } from '@repo/data-ops/queries/links';
 import { Hono } from 'hono';
 import { cloudflareInfoSchema } from '@repo/data-ops/zod-schema/links';
-import { getDestinationForCountry, getRoutingDestinations } from '@/helpers/route-ops';
-import { LinkClickMessageType, QueueMessageSchema } from '@repo/data-ops/zod-schema/queue';
+import { captureLinkClickInBackground, getDestinationForCountry, getRoutingDestinations } from '@/helpers/route-ops';
+import { QueueMessageSchema } from '@repo/data-ops/zod-schema/queue';
+import { logger } from 'hono/logger'
 
 export const app = new Hono<{ Bindings: Env }>();
+
+app.use('*', logger())
+
+app.get('/click-socket', async (ctx) => {
+	const upgradeHeader = ctx.req.header('Upgrade');
+	if (!upgradeHeader || upgradeHeader !== 'websocket') {
+		return ctx.text('Expected Upgrade: websocket', 426);
+	}
+
+	const accountId = ctx.req.header('account-id');
+	if (!accountId) return ctx.text('No Headers', 404);
+
+	const doId = ctx.env.LINK_CLICK_TRACKER.idFromName(accountId);
+	const stub = ctx.env.LINK_CLICK_TRACKER.get(doId);
+
+	return await stub.fetch(ctx.req.raw);
+});
 
 app.get('/:id', async (c) => {
 	// console.log(JSON.stringify(c.req.raw.cf))
@@ -46,15 +64,13 @@ app.get('/:id', async (c) => {
 		},
 	};
 
-  const parsedQueueMessage = QueueMessageSchema.safeParse(queueMessage);
+	const parsedQueueMessage = QueueMessageSchema.safeParse(queueMessage);
 
-  if (!parsedQueueMessage.success) {
-    return c.text('Invalid queue message', 400);
-  }
+	if (!parsedQueueMessage.success) {
+		return c.text('Invalid queue message', 400);
+	}
 
-  c.executionCtx.waitUntil(c.env.QUEUE.send(parsedQueueMessage.data, {
-    "delaySeconds": 1, // wait 1 second before processing the message just for example
-  }));
+	c.executionCtx.waitUntil(captureLinkClickInBackground(c.env, parsedQueueMessage.data));
 
 	return c.redirect(destination);
 });

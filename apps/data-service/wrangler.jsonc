@@ -57,4 +57,24 @@
 		"binding": "AI",
 	},
 	"r2_buckets": [{ "binding": "EVALUATIONS_BUCKET", "bucket_name": "smart-links-evaluations-stage", "remote": true }],
+	"durable_objects": {
+		"bindings": [
+			{ "name": "EVALUATION_SCHEDULER", "class_name": "EvaluationScheduler" },
+			{ "name": "LINK_CLICK_TRACKER", "class_name": "LinkClickTracker" },
+		]
+	},
+	"migrations": [
+		{"tag": "v1", "new_classes": ["EvaluationScheduler"]},
+		{"tag": "v2", "new_classes": ["LinkClickTracker"]},
+		{"tag": "v3", "deleted_classes": ["LinkClickTracker"]},
+		{"tag": "v4", "new_sqlite_classes": ["LinkClickTracker"]},
+		
+	],
+	"rules": [
+		{
+			"type": "Text",
+			"globs": ["**/*.sql"],
+			"fallthrough": true
+		}
+	]
 }
