@@ -21,7 +21,7 @@ app.get('/click-socket', async (ctx) => {
 	return await stub.fetch(ctx.req.raw);
 });
 
-app.get('/:id', async (c) => {
+app.get('/r/:id', async (c) => {
 	// console.log(JSON.stringify(c.req.raw.cf))
 	// const cf = c.req.raw.cf as IncomingRequestCfProperties
 	// const country = cf.country

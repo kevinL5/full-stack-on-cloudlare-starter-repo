@@ -13,6 +13,12 @@
 	},
 	"env": {
 		"stage": {
+			"routes": [
+				{
+					"zone_name": "smartpath.work",
+					"pattern": "stage.smartpath.work/r/*",
+				},
+			],
 			"d1_databases": [
 				{
 					"binding": "DB",
@@ -78,6 +84,12 @@
 			],
 		},
 		"production": {
+			"routes": [
+				{
+					"zone_name": "smartpath.work",
+					"pattern": "smartpath.work/r/*",
+				},
+			],
 			"d1_databases": [
 				{
 					"binding": "DB",
