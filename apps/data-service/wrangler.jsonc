@@ -11,70 +11,134 @@
 	"observability": {
 		"enabled": true,
 	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_id": "03084d6f-33b2-4fd0-8e6b-cf8722c84db5",
-			"remote": true,
-		},
-	],
-	"kv_namespaces": [
-		{
-			"binding": "CACHE",
-			"id": "7b461abaa5274e0e8a0a3fa20b9f953a",
-			"remote": true,
-		},
-	],
-	"queues": {
-		"consumers": [
-			{
-				"queue": "smart-links-data-queue-stage",
-				"dead_letter_queue": "smart-links-data-dead-letter-queue-stage",
+	"env": {
+		"stage": {
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_id": "03084d6f-33b2-4fd0-8e6b-cf8722c84db5",
+					"remote": true,
+				},
+			],
+			"kv_namespaces": [
+				{
+					"binding": "CACHE",
+					"id": "7b461abaa5274e0e8a0a3fa20b9f953a",
+					"remote": true,
+				},
+			],
+			"queues": {
+				"consumers": [
+					{
+						"queue": "smart-links-data-queue-stage",
+						"dead_letter_queue": "smart-links-data-dead-letter-queue-stage",
+					},
+					{
+						"queue": "smart-links-data-dead-letter-queue-stage",
+						"max_retries": 0, // default is 3
+					},
+				],
+				"producers": [
+					{
+						"binding": "QUEUE",
+						"queue": "smart-links-data-queue-stage",
+					},
+				],
 			},
-			{
-				"queue": "smart-links-data-dead-letter-queue-stage",
-				"max_retries": 0, // default is 3
+			"workflows": [
+				{
+					"binding": "DESTINATION_EVALUATION_WORKFLOW",
+					"name": "destination-evaluation-workflow",
+					"class_name": "DestinationEvaluationWorkflow",
+				},
+			],
+			"browser": {
+				"binding": "VIRTUAL_BROWSER",
 			},
-		],
-		"producers": [
-			{
-				"binding": "QUEUE",
-				"queue": "smart-links-data-queue-stage",
+			"ai": {
+				"binding": "AI",
 			},
-		],
-	},
-	"workflows": [
-		{
-			"binding": "DESTINATION_EVALUATION_WORKFLOW",
-			"name": "destination-evaluation-workflow",
-			"class_name": "DestinationEvaluationWorkflow",
+			"r2_buckets": [{ "binding": "EVALUATIONS_BUCKET", "bucket_name": "smart-links-evaluations-stage", "remote": true }],
+			"durable_objects": {
+				"bindings": [
+					{ "name": "EVALUATION_SCHEDULER", "class_name": "EvaluationScheduler" },
+					{ "name": "LINK_CLICK_TRACKER", "class_name": "LinkClickTracker" },
+				],
+			},
+			"migrations": [
+				{ "tag": "v1", "new_classes": ["EvaluationScheduler"] },
+				{ "tag": "v2", "new_sqlite_classes": ["LinkClickTracker"] },
+			],
+			"rules": [
+				{
+					"type": "Text",
+					"globs": ["**/*.sql"],
+					"fallthrough": true,
+				},
+			],
 		},
-	],
-	"browser": {
-		"binding": "VIRTUAL_BROWSER",
+		"production": {
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_id": "648ef8e2-5356-491b-9302-42abefe712f2",
+				},
+			],
+			"kv_namespaces": [
+				{
+					"binding": "CACHE",
+					"id": "49c3e227cd544e90ba87834d0585d793",
+				},
+			],
+			"queues": {
+				"consumers": [
+					{
+						"queue": "smart-links-data-queue-production",
+						"dead_letter_queue": "smart-links-data-dead-letter-queue-production",
+					},
+					{
+						"queue": "smart-links-data-dead-letter-queue-production",
+						"max_retries": 0, // default is 3
+					},
+				],
+				"producers": [
+					{
+						"binding": "QUEUE",
+						"queue": "smart-links-data-queue-production",
+					},
+				],
+			},
+			"workflows": [
+				{
+					"binding": "DESTINATION_EVALUATION_WORKFLOW",
+					"name": "destination-evaluation-workflow-production",
+					"class_name": "DestinationEvaluationWorkflow",
+				},
+			],
+			"browser": {
+				"binding": "VIRTUAL_BROWSER",
+			},
+			"ai": {
+				"binding": "AI",
+			},
+			"r2_buckets": [{ "binding": "EVALUATIONS_BUCKET", "bucket_name": "smart-links-evaluations-production" }],
+			"durable_objects": {
+				"bindings": [
+					{ "name": "EVALUATION_SCHEDULER", "class_name": "EvaluationScheduler" },
+					{ "name": "LINK_CLICK_TRACKER", "class_name": "LinkClickTracker" },
+				],
+			},
+			"migrations": [
+				{ "tag": "v1", "new_classes": ["EvaluationScheduler"] },
+				{ "tag": "v2", "new_sqlite_classes": ["LinkClickTracker"] },
+			],
+			"rules": [
+				{
+					"type": "Text",
+					"globs": ["**/*.sql"],
+					"fallthrough": true,
+				},
+			],
+		},
 	},
-	"ai": {
-		"binding": "AI",
-	},
-	"r2_buckets": [{ "binding": "EVALUATIONS_BUCKET", "bucket_name": "smart-links-evaluations-stage", "remote": true }],
-	"durable_objects": {
-		"bindings": [
-			{ "name": "EVALUATION_SCHEDULER", "class_name": "EvaluationScheduler" },
-			{ "name": "LINK_CLICK_TRACKER", "class_name": "LinkClickTracker" },
-		]
-	},
-	"migrations": [
-		{"tag": "v1", "new_classes": ["EvaluationScheduler"]},
-		{"tag": "v2", "new_classes": ["LinkClickTracker"]},
-		{"tag": "v3", "deleted_classes": ["LinkClickTracker"]},
-		{"tag": "v4", "new_sqlite_classes": ["LinkClickTracker"]},
-		
-	],
-	"rules": [
-		{
-			"type": "Text",
-			"globs": ["**/*.sql"],
-			"fallthrough": true
-		}
-	]
 }

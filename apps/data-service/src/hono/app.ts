@@ -3,11 +3,8 @@ import { Hono } from 'hono';
 import { cloudflareInfoSchema } from '@repo/data-ops/zod-schema/links';
 import { captureLinkClickInBackground, getDestinationForCountry, getRoutingDestinations } from '@/helpers/route-ops';
 import { QueueMessageSchema } from '@repo/data-ops/zod-schema/queue';
-import { logger } from 'hono/logger'
 
 export const app = new Hono<{ Bindings: Env }>();
-
-app.use('*', logger())
 
 app.get('/click-socket', async (ctx) => {
 	const upgradeHeader = ctx.req.header('Upgrade');
