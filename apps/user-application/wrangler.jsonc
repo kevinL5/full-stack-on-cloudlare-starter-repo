@@ -19,6 +19,7 @@
   "env": {
     "stage": {
       "vars": {
+        "GOOGLE_CLIENT_ID": "904331840951-oh4gr2j7gm60f0i3njmof5b58uvrh481.apps.googleusercontent.com",
         "STRIPE_PRODUCT_BASIC": "price_1SL4AiJ0xU7ut2y3biKFmLaA",
         "STRIPE_PRODUCT_PRO": "price_1SL4AqJ0xU7ut2y3H5kLEUZw",
         "STRIPE_PRODUCT_ENTERPRISE": "price_1SL4AzJ0xU7ut2y3YpALN6LN"
@@ -46,6 +47,7 @@
     },
     "production": {
       "vars": {
+        "GOOGLE_CLIENT_ID": "904331840951-oh4gr2j7gm60f0i3njmof5b58uvrh481.apps.googleusercontent.com",
         "STRIPE_PRODUCT_BASIC": "price_1SL4AiJ0xU7ut2y3biKFmLaA",
         "STRIPE_PRODUCT_PRO": "price_1SL4AqJ0xU7ut2y3H5kLEUZw",
         "STRIPE_PRODUCT_ENTERPRISE": "price_1SL4AzJ0xU7ut2y3YpALN6LN"
