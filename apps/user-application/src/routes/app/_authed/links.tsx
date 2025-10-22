@@ -60,14 +60,14 @@ function RouteComponent() {
       header: "Link",
       cell: (info) => (
         <div className="flex items-center gap-2">
-          <span className="truncate max-w-[200px]">{`https://${import.meta.env.VITE_BACKEND_HOST}/${info.getValue()}`}</span>
+          <span className="truncate max-w-[200px]">{`https://${import.meta.env.VITE_BACKEND_HOST}/r/${info.getValue()}`}</span>
           <Button
             variant="ghost"
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
               copyToClipboard(
-                `https://${import.meta.env.VITE_BACKEND_HOST}/${info.getValue()}`,
+                `https://${import.meta.env.VITE_BACKEND_HOST}/r/${info.getValue()}`,
               );
             }}
           >
