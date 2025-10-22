@@ -21,11 +21,13 @@ type StripeConfig = {
 
 export function createBetterAuth(
   database: NonNullable<Parameters<typeof betterAuth>[0]>["database"],
+  secret: string,
   stripeConfig?: StripeConfig,
   google?: { clientId: string; clientSecret: string },
 ): ReturnType<typeof betterAuth> {
   return betterAuth({
     database,
+    secret: secret,
     emailAndPassword: {
       enabled: false,
     },
@@ -59,24 +61,24 @@ export function createBetterAuth(
 export function getAuth(
   google: { clientId: string; clientSecret: string },
   stripe: StripeConfig,
-
+  secret: string,
 ): ReturnType<typeof betterAuth> {
-    if (auth) return auth;
-  
-    auth = createBetterAuth(
-      drizzleAdapter(getDb(), {
-        provider: "sqlite",
-        schema: {
-          user,
-          session,
-          account,
-          verification,
-          subscription
+  if (auth) return auth;
 
-        }
-      }),
-      stripe,
-      google,
-    );
-    return auth;
+  auth = createBetterAuth(
+    drizzleAdapter(getDb(), {
+      provider: "sqlite",
+      schema: {
+        user,
+        session,
+        account,
+        verification,
+        subscription,
+      },
+    }),
+    secret,
+    stripe,
+    google,
+  );
+  return auth;
 }
