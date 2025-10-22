@@ -18,6 +18,11 @@
   },
   "env": {
     "stage": {
+      "vars": {
+        "STRIPE_PRODUCT_BASIC": "price_1SL4AiJ0xU7ut2y3biKFmLaA",
+        "STRIPE_PRODUCT_PRO": "price_1SL4AqJ0xU7ut2y3H5kLEUZw",
+        "STRIPE_PRODUCT_ENTERPRISE": "price_1SL4AzJ0xU7ut2y3YpALN6LN"
+      },
       "routes": [
         {
           "custom_domain": true,
@@ -40,6 +45,11 @@
       ]
     },
     "production": {
+      "vars": {
+        "STRIPE_PRODUCT_BASIC": "price_1SL4AiJ0xU7ut2y3biKFmLaA",
+        "STRIPE_PRODUCT_PRO": "price_1SL4AqJ0xU7ut2y3H5kLEUZw",
+        "STRIPE_PRODUCT_ENTERPRISE": "price_1SL4AzJ0xU7ut2y3YpALN6LN"
+      },
       "routes": [
         {
           "custom_domain": true,
